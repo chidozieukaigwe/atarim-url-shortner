@@ -22,8 +22,6 @@ class StoreLinkRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // @todo: test both validation rules
-            // 'original_url' => 'required|url',
             'original_url' => ['required', 'regex:/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i']
 
         ];

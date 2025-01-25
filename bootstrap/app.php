@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Middleware\AlwaysAcceptJson;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -13,8 +16,17 @@ return Application::configure(basePath: dirname(__DIR__))
         apiPrefix: 'api/v1'
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->prependToGroup('api', AlwaysAcceptJson::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+
+        $exceptions->render(function (NotFoundHttpException $e, Request $request) {
+            if ($request->wantsJson() && $request->is('api/v1/decode/*')) {
+                return response()->json([
+                    'status' => 404,
+                    'message' => 'Could not find url: The short code could not be found',
+                    'short_code' => $e->getPrevious()->getIds()
+                ], 404);
+            }
+        });
     })->create();
