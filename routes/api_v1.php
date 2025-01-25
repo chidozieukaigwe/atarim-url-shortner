@@ -10,6 +10,8 @@ Route::get('/', function () {
 
 Route::post('/encode', [LinkController::class, 'store'])->name('encode');
 
+Route::get('/decode/{link:short_code}', [LinkController::class, 'show'])->name('decode');
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
