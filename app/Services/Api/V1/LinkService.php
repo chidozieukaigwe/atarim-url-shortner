@@ -2,7 +2,10 @@
 
 namespace App\Services\Api\V1;
 
+use App\Exceptions\FailedShortUrlException;
+use App\Exceptions\FailedToShortUrlException;
 use App\Models\Link;
+use Exception;
 use Vinkla\Hashids\Facades\Hashids;
 
 class LinkService
@@ -20,22 +23,27 @@ class LinkService
 
     public function generateShortUrl($originalUrl): Link
     {
-        $existingUrl = Link::where('original_url', $originalUrl)->first();
+        try {
+            $existingUrl = Link::where('original_url', $originalUrl)->first();
 
-        if ($existingUrl) {
-            return $this->basePath . $existingUrl->short_code;
+            if ($existingUrl) {
+                return $existingUrl;
+            }
+
+            $link = Link::create([
+                'original_url' => $originalUrl,
+            ]);
+
+            // @todo link this is readme file - https://github.com/vinkla/laravel-hashids
+
+            $link->short_code = Hashids::encode($link->id);
+            $link->save();
+
+            return $link;
+        } catch (Exception $th) {
+            // @todo add debug
+            throw new FailedToShortUrlException();
         }
-
-        $link = Link::create([
-            'original_url' => $originalUrl,
-        ]);
-
-        // @todo link this is readme file - https://github.com/vinkla/laravel-hashids
-
-        $link->short_code = Hashids::encode($link->id);
-        $link->save();
-
-        return $link;
     }
 
     public function retrieveOriginalUrl($shortCode)
