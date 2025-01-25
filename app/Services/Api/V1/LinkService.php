@@ -18,13 +18,13 @@ class LinkService
         $this->basePath = url("/") . "/";
     }
 
-    public function generateShortUrl($originalUrl): array
+    public function generateShortUrl($originalUrl): Link
     {
-        // $existingUrl = Link::where('original_url', $originalUrl)->first();
+        $existingUrl = Link::where('original_url', $originalUrl)->first();
 
-        // if ($existingUrl) {
-        //     return $this->basePath . $existingUrl->short_code;
-        // }
+        if ($existingUrl) {
+            return $this->basePath . $existingUrl->short_code;
+        }
 
         $link = Link::create([
             'original_url' => $originalUrl,
@@ -35,19 +35,13 @@ class LinkService
         $link->short_code = Hashids::encode($link->id);
         $link->save();
 
-        $shortUrl = $this->basePath . $link->short_code;
-
-        return [
-            'original_url' => $link->original_url,
-            'short_code' => $link->short_code,
-            'short_url' => $shortUrl,
-        ];
+        return $link;
     }
 
     public function retrieveOriginalUrl($shortCode)
     {
         $linkId = Hashids::decode($shortCode);
         $link = Link::find($linkId[0]);
-        return $link->original_url;
+        return $link;
     }
 }
