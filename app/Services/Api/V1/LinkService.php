@@ -6,6 +6,7 @@ use App\Exceptions\FailedShortUrlException;
 use App\Exceptions\FailedToShortUrlException;
 use App\Models\Link;
 use Exception;
+use Illuminate\Support\Facades\Log;
 use Vinkla\Hashids\Facades\Hashids;
 
 class LinkService
@@ -39,15 +40,18 @@ class LinkService
             $link->short_code = Hashids::encode($link->id);
             $link->save();
 
+            Log::info('Link successfully shortened: ', ['link_details' => $link]);
             return $link;
-        } catch (Exception $th) {
+        } catch (Exception $exception) {
             // @todo add debug
+            Log::error('Error shortening the url: ', ['exception' => $exception]);
             throw new FailedToShortUrlException();
         }
     }
 
     public function retrieveOriginalUrl($shortCode)
     {
+        // @notes: Hashids returns an array
         $linkId = Hashids::decode($shortCode);
         $link = Link::find($linkId[0]);
         return $link;
