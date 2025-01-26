@@ -26,7 +26,6 @@ class LinkService
 
             $existingUrl = $this->linkRepository->where('original_url', $originalUrl);
 
-
             if ($existingUrl) {
                 return $existingUrl;
             }
@@ -47,7 +46,7 @@ class LinkService
             return $link;
         } catch (Exception $exception) {
             Log::error('Error shortening the url: ', ['exception' => $exception]);
-            throw new FailedToShortUrlException();
+            throw new FailedToShortUrlException($exception);
         }
     }
 

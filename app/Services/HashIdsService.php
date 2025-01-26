@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\EncodeDecodeFailureException;
 use Exception;
+use Illuminate\Support\Facades\Log;
 use Vinkla\Hashids\Facades\Hashids;
 
 class HashIdsService
@@ -12,8 +13,8 @@ class HashIdsService
     {
         try {
             return Hashids::encode($linkId);
-        } catch (Exception $th) {
-            // @todo add a different exception error
+        } catch (Exception $exception) {
+            Log::error('decoding failed: ', ['exception' => $exception]);
             throw new EncodeDecodeFailureException('The encode service failed');
         }
     }
@@ -24,8 +25,8 @@ class HashIdsService
         try {
             return Hashids::decode($linkId)[0];
         } catch (Exception $exception) {
-            // @todo add a different exception error
-            throw new EncodeDecodeFailureException('The decode service failed' . $exception);
+            Log::error('decoding failed: ', ['exception' => $exception]);
+            throw new EncodeDecodeFailureException('The decode service failed');
         }
     }
 }
