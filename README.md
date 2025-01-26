@@ -42,3 +42,8 @@ Use the following commands to run the tests suites associated with this applicat
 * Run Feature Tests: `php artisan test --filter=feature`
 * Run Full Test Suite: `php artisan test`
 
+## Notes
+* This package is used as the decode and encode algorithm:
+https://github.com/vinkla/laravel-hashids 
+* URLs are persisted via an SQL Lite database
+* Api endpoints return JSON
