@@ -37,6 +37,7 @@ access the api at: http://127.0.0.1:8000/api/v1
 * GET - `/api//v1/decode/{short_code}` (returns a payload)
 
 ## Testing 
+The test suite uses PHPUnit:
 Use the following commands to run the tests suites associated with this application: 
 * Run Unit Tests: `php artisan test --filter=unit`
 * Run Feature Tests: `php artisan test --filter=feature`
