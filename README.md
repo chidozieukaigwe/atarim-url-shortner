@@ -1,4 +1,4 @@
-#  [Application Name]
+#  Atarim URL Shortner Service App
 
 This is a README file for the Atarim url shortner application, a laravel 11 api.
 
