@@ -2,45 +2,65 @@
 
 namespace App\Services\Api\V1;
 
-use App\Exceptions\FailedShortUrlException;
 use App\Exceptions\FailedToShortUrlException;
 use App\Models\Link;
+use App\Repositories\LinkRepositoryInterface;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Vinkla\Hashids\Facades\Hashids;
 
 class LinkService
 {
+    protected $linkRepository;
 
-    protected $basePath;
-
-    /**
-     * Create a new class instance.
-     */
-    public function __construct()
+    public function __construct(LinkRepositoryInterface $linkRepository)
     {
-        $this->basePath = url("/") . "/";
+        $this->linkRepository = $linkRepository;
+    }
+
+    private function createAHashShortCode(string $linkId)
+    {
+        try {
+            return Hashids::encode($linkId);
+        } catch (Exception $th) {
+            // @todo add a different exception error
+            throw new FailedToShortUrlException();
+        }
+    }
+
+    private function decodeAHashShortCode(string $linkId)
+    {
+        try {
+            return Hashids::decode($linkId)[0];
+        } catch (Exception $th) {
+            // @todo add a different exception error
+            throw new FailedToShortUrlException();
+        }
     }
 
     public function generateShortUrl($originalUrl): Link
     {
         try {
-            $existingUrl = Link::where('original_url', $originalUrl)->first();
+
+            $existingUrl = $this->linkRepository->where('original_url', null, $originalUrl);
 
             if ($existingUrl) {
                 return $existingUrl;
             }
 
-            $link = Link::create([
-                'original_url' => $originalUrl,
+            $link = $this->linkRepository->create([
+                'original_url' => $originalUrl
             ]);
 
             // @todo link this is readme file - https://github.com/vinkla/laravel-hashids
+            // @todo - explain in readme the hashids config file
 
-            $link->short_code = Hashids::encode($link->id);
+            $link->short_code = $this->createAHashShortCode($link->id);
+
             $link->save();
 
             Log::info('Link successfully shortened: ', ['link_details' => $link]);
+
             return $link;
         } catch (Exception $exception) {
             // @todo add debug
@@ -51,9 +71,8 @@ class LinkService
 
     public function retrieveOriginalUrl($shortCode)
     {
-        // @notes: Hashids returns an array
-        $linkId = Hashids::decode($shortCode);
-        $link = Link::find($linkId[0]);
+        $linkId = $this->decodeAHashShortCode($shortCode);
+        $link = $this->linkRepository->find($linkId);
         return $link;
     }
 }
