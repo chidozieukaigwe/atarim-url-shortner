@@ -16,8 +16,8 @@ class LinkRepository implements LinkRepositoryInterface
         return Link::create($data);
     }
     //+
-    public function where($column, $operator = null, $value = null)
+    public function where($column, $value)
     {
-        return Link::where($column, $operator, $value)->first();
+        return Link::where($column, $value)->first();
     }
 }
