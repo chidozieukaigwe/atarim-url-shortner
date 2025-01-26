@@ -14,14 +14,14 @@ The application uses an SQL Lite database, update your `.env` file and add: `DB_
 
 Connect to the database via a GUI, and access the file: `/database/database.sqlite` to access the application database.
 
-###  Prerequisites
+##  Prerequisites
 * Http Client - [Postman: https://www.postman.com/] or [Insomnia: https://insomnia.rest/] to create `POST|GET` requests to the api. 
 * Database GUI  [TablePlus: https://tableplus.com/] allows you to visually interact with the database.
 * PHP 8.0^
 * Laravel 11 
 * SQL Lite
 
-###  Installation
+##  Installation
 1.  **Clone the repository:**
 `git clone https://github.com/chidozieukaigwe/atarim-url-shortner.git`
 
@@ -32,11 +32,11 @@ Connect to the database via a GUI, and access the file: `/database/database.sqli
 `php artisan serve`
 access the api at: http://127.0.0.1:8000/api/v1
 
-### Api Endpoints
+## Api Endpoints
 * POST - `/api/v1/encode` (expects a payload)
 * GET - `/api//v1/decode/{short_code}` (returns a payload)
 
-### Testing 
+## Testing 
 Use the following commands to run the tests suites associated with this application: 
 * Run Unit Tests: `php artisan test --filter=unit`
 * Run Feature Tests: `php artisan test --filter=feature`
