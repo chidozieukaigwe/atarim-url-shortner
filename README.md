@@ -10,7 +10,13 @@ The application is an api that has two api endpoints: 'decode' and 'encode' that
 
 ##  Getting Started
 
-The application uses an SQL Lite database, update your `.env` file and add: `DB_CONNECTION=sqlite`.
+The application uses an SQL Lite database, update your `.env` file and add the following variable: `DB_CONNECTION=sqlite`. You can also comment out the following .env variables to ensure no database complications occur with the project:
+* DB_HOST=127.0.0.1
+* DB_PORT=3306
+* DB_DATABASE=laravel
+* DB_USERNAME=root
+* DB_PASSWORD=
+,
 
 Connect to the database via a GUI, and access the file: `/database/database.sqlite` to access the application database.
 
@@ -43,8 +49,9 @@ Use the following commands to run the tests suites associated with this applicat
 * Run Feature Tests: `php artisan test --filter=feature`
 * Run Full Test Suite: `php artisan test`
 
-## Notes
+## App Notes
 * This package is used as the decode and encode algorithm:
 https://github.com/vinkla/laravel-hashids 
 * URLs are persisted via an SQL Lite database
 * Api endpoints return JSON
+* Global error handler catching 404 not found exceptions on the api. Review `/bootstrap/app.php` file to see the handler.
